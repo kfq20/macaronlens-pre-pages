@@ -730,7 +730,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
 <div class="slide">
   <div class="split split--right">
     <div class="split-img frag" data-step="0" data-anim="scale-in">
-      <video data-src="../video/eat-02.mp4" muted loop playsinline preload="none"></video>
+      <video src="../video/eat-02.mp4" muted loop playsinline preload="auto"></video>
     </div>
     <div class="split-text">
       <div class="frag headline" data-step="1" data-anim="fade-up" style="font-weight:700;">早餐热量分析</div>
@@ -751,7 +751,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
 <div class="slide">
   <div class="split split--left">
     <div class="split-img frag" data-step="0" data-anim="scale-in">
-      <video data-src="../video/eat-01.mp4" muted loop playsinline preload="none"></video>
+      <video src="../video/eat-01.mp4" muted loop playsinline preload="auto"></video>
     </div>
     <div class="split-text">
       <div class="frag headline" data-step="1" data-anim="fade-up" style="font-weight:700;">午餐成分分析</div>
@@ -771,7 +771,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
 <div class="slide">
   <div class="split split--right">
     <div class="split-img frag" data-step="0" data-anim="scale-in">
-      <video data-src="../video/menu-01.mp4" muted loop playsinline preload="none"></video>
+      <video src="../video/menu-01.mp4" muted loop playsinline preload="auto"></video>
     </div>
     <div class="split-text">
       <div class="frag headline" data-step="1" data-anim="fade-up" style="font-weight:700;">菜单翻译 + 智能选菜</div>
@@ -792,7 +792,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
 <div class="slide">
   <div class="split split--left">
     <div class="split-img frag" data-step="0" data-anim="scale-in">
-      <video data-src="../video/cook-01.mp4" muted loop playsinline preload="none"></video>
+      <video src="../video/cook-01.mp4" muted loop playsinline preload="auto"></video>
     </div>
     <div class="split-text">
       <div class="frag headline" data-step="1" data-anim="fade-up" style="font-weight:700;">买菜指导 + 烹饪建议</div>
@@ -812,7 +812,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
 <div class="slide">
   <div class="split split--right">
     <div class="split-img frag" data-step="0" data-anim="scale-in">
-      <video data-src="../video/ar-demo.mp4" muted loop playsinline preload="none"></video>
+      <video src="../video/ar-demo.mp4" muted loop playsinline preload="auto"></video>
     </div>
     <div class="split-text">
       <div class="frag headline" data-step="1" data-anim="fade-up" style="font-weight:700;">AR 主动感知</div>
@@ -1137,8 +1137,14 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
 (function() {
   const slides = Array.from(document.querySelectorAll('.slide'));
   const pagenum = document.querySelector('.pagenum');
+  const videos = Array.from(document.querySelectorAll('video'));
   let current = 0;
   let currentStep = 0;
+
+  videos.forEach(v => {
+    v.preload = 'auto';
+    v.load();
+  });
 
   function getMaxStep(slideEl) {
     const frags = slideEl.querySelectorAll('.frag');
@@ -1154,22 +1160,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--fon
     slides[current].classList.remove('active');
     slides[current].querySelectorAll('.frag').forEach(f => f.classList.remove('frag--visible'));
     slides[current].querySelectorAll('.strike-word').forEach(sw => sw.classList.remove('strike--active'));
-    slides[current].querySelectorAll('video').forEach(v => {
-      v.pause();
-      v.removeAttribute('src');
-      v.load();
-    });
+    slides[current].querySelectorAll('video').forEach(v => { v.pause(); });
 
     current = Math.max(0, Math.min(i, slides.length - 1));
     currentStep = 0;
     slides[current].classList.add('active');
 
-    slides[current].querySelectorAll('video').forEach(v => {
-      if (!v.src && v.dataset.src) v.src = v.dataset.src;
-      v.currentTime = 0;
-      v.playbackRate = 1;
-      v.play().catch(() => {});
-    });
+    slides[current].querySelectorAll('video').forEach(v => { v.currentTime = 0; v.playbackRate = 1; v.play().catch(() => {}); });
 
     // Click video to pause/resume
     slides[current].querySelectorAll('video').forEach(v => {
